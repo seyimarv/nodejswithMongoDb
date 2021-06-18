@@ -1,18 +1,31 @@
-// const mysql = require('mysql2'); //import mysql database 
+const mongodb = require('mongodb') // import mongoDB
 
-// const pool = mysql.createPool({
-//     host: 'localhost',
-//     user: 'root',
-//     database: 'node-complete',
-//     password: 'Tomilayo1!'
-// })     // creating a new connection pool, alllow to run multiple queries
+const MongoClient = mongodb.MongoClient; // import mongo client
 
+let _db;
 
-// module.exports = pool.promise() //allows us to use promises to handle asynchronus task instead of callbacks
+const mongoConnect = (callback) => {
+    // connect client to DATABASE, copy url from mongoDb after clicking connect and replace <password> with your password
+    // connect returns a promise
+     MongoClient.connect('mongodb+srv://Marvelous:Tomilayo1@cluster0.yopfs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+     .then(client => {
+        console.log('connected')
+       _db = client.db();
+       callback();
+    }).catch(err => {
+        console.log(err)
+       
+    })
+}
 
-//using sequelize instead
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('node-complete', 'root', 'Tomilayo1!', 
-{dialect: 'mysql', host: 'localhost'});
+const getDb = () => {
+    if (_db) {
+        return _db;
+    }
+  
+    throw 'No database found'
+   
+}
 
-module.exports = sequelize;
+exports.mongoConnect  = mongoConnect;
+exports.getDb = getDb;
